@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaceCaptureStep } from "@/components/face-capture-step";
 import { useCubeScan } from "@/context/cube-scan-context";
@@ -16,7 +16,7 @@ const instructions: Record<string, string> = {
   down: "Flip to show the bottom face with all stickers visible."
 };
 
-export default function ScanPage() {
+function ScanContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const stepParam = searchParams.get("step");
@@ -65,5 +65,19 @@ export default function ScanPage() {
         }}
       />
     </main>
+  );
+}
+
+export default function ScanPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto min-h-screen w-full max-w-3xl p-4 sm:p-6">
+          <p className="text-sm text-slate-600">Loading…</p>
+        </main>
+      }
+    >
+      <ScanContent />
+    </Suspense>
   );
 }
